@@ -74,21 +74,22 @@ public class TaskManager {
         }
     }
 
-    public String editTaskName(String taskName, int task_id, long id) {
-        String sql = "UPDATE TASK SET task_name = ? WHERE id = ? AND telegram_id = ?";
+    public String editFullTask(String taskName,String task, int task_id, long id) {
+        String sql = "UPDATE TASK SET task_name = ?,task = ? WHERE id = ? AND telegram_id = ?";
         int result = 0;
         if (connection != null) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, taskName);
-                preparedStatement.setInt(2, task_id);
-                preparedStatement.setLong(3, id);
+                preparedStatement.setString(2, task);
+                preparedStatement.setInt(3, task_id);
+                preparedStatement.setLong(4, id);
                 result = preparedStatement.executeUpdate();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         if (result > 0) {
-            return "Задача " + taskName + " была изменина ✅";
+            return "Задача " + taskName + " была изменена ✅";
         } else {
             return "Задача не изменена, узнайте как сохранять задачи через /properties";
         }

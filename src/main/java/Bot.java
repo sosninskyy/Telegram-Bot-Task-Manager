@@ -34,13 +34,17 @@ public class Bot extends TelegramLongPollingBot {
                 sendPropertiesMessage(id);
             } else if (message.startsWith("/edit")) {
                 try {
-                    String[] split_message = message.replace("/edit ", "").split(",");
-                    if (split_message.length >= 2) {
+                    String[] split_message = message.replace("/edit ", "").split(",",3);
+                    if (split_message.length >= 3) {
                         int mess_id = Integer.parseInt(split_message[0].trim());
                         String name = split_message[1].trim();
-                        sendMessage(id, taskManager.editTaskName(name, mess_id, id));
+                        String task = split_message[2].trim();
+                        if (name.isEmpty() || task.isEmpty()) {
+                            throw new Exception();
+                        }
+                        sendMessage(id, taskManager.editFullTask(name,task, mess_id, id));
                     } else {
-                        sendMessage(id, "⚠️ Нужно ввести ID и новое название через запятую!\nПример: `/edit 15, Купить молоко` ");
+                        sendMessage(id, "⚠️ Нужно ввести ID, задачу и новое название через запятую!\nПример: `/edit 15, Купить молоко, в магазине купить молоко` ");
                     }
                 } catch (NumberFormatException e ) {
                     sendMessage(id, "❌ Ошибка: ID должен быть числом!");
@@ -77,11 +81,13 @@ public class Bot extends TelegramLongPollingBot {
     private void sendPropertiesMessage(long id) {
         String message = "\uD83D\uDC4B Привет! Я твой персональный менеджер задач.\n" +
                 "\n" +
-                "Добавление - чтобы добавление задачи прошло успешно, вам нужно добавлять задачи в таком формате /add Название задачи, задача.\n" +
+                "Добавление - чтобы добавление задачи прошло успешно, вам нужно добавлять задачи в таком формате `/add Название задачи, задача.`\n" +
                 "\n" +
-                "Показать список - чтобы вам показался список с вашими задачами и их id просто введите /list.\n" +
+                "Показать список - чтобы вам показался список с вашими задачами и их id просто введите `/list.`\n" +
                 "\n" +
-                "Удаление задач - удалить задачу нужно именно по id который указан у неё рядом в списке, в таком формате /done id(В виде цифры)";
+                "Удаление задач - удалить задачу нужно именно по id который указан у неё рядом в списке, в таком формате `/done id(В виде цифры)`\n"
+                + "\n" +
+                "Изменение задач - нужно ввести ID, задачу и новое название через запятую!\nПример: `/edit 15, Купить молоко, в магазине купить молоко` ";
         sendMessage(id, message);
     }
     public void sendMessage(long id, String message) {
