@@ -32,6 +32,21 @@ public class Bot extends TelegramLongPollingBot {
                 sendMessage(id, taskManager.deleteTask(integerFromMessage, id));
             } else if (message.equals("/properties")) {
                 sendPropertiesMessage(id);
+            } else if (message.startsWith("/edit")) {
+                try {
+                    String[] split_message = message.replace("/edit ", "").split(",");
+                    if (split_message.length >= 2) {
+                        int mess_id = Integer.parseInt(split_message[0].trim());
+                        String name = split_message[1].trim();
+                        sendMessage(id, taskManager.editTaskName(name, mess_id, id));
+                    } else {
+                        sendMessage(id, "⚠️ Нужно ввести ID и новое название через запятую!\nПример: `/edit 15, Купить молоко` ");
+                    }
+                } catch (NumberFormatException e ) {
+                    sendMessage(id, "❌ Ошибка: ID должен быть числом!");
+                } catch (Exception e) {
+                    sendMessage(id, "❌ Что-то пошло не так при редактировании.");
+                }
             }
 
         }
