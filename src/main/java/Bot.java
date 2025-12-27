@@ -17,9 +17,13 @@ public class Bot extends TelegramLongPollingBot {
                 sendStartMessage(id);
             } else if (message.startsWith("/add")) {
                 String[] splitMessage = message.replace("/add ", "").split(",");
-                String name = splitMessage[0];
-                String taskText = splitMessage[1];;
-                sendMessage(id, taskManager.addTask(name, taskText, id));
+                if (splitMessage.length >= 2) {
+                    String name = splitMessage[0];
+                    String taskText = splitMessage[1];
+                    taskManager.addTask(name, taskText, id);
+                } else {
+                    sendMessage(id, "⚠️ ***Ошибка! Используйте запятую как разделитель.***\nПример: `/add Покупки, Купить хлеб и молоко` ");
+                }
             } else if (message.equals("/list")) {
                 sendMessage(id, taskManager.showTasks(id));
             } else if (message.startsWith("/done")) {
@@ -35,12 +39,12 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "";
+        return System.getenv("BOT_NAME");
     }
 
     @Override
     public String getBotToken() {
-        return "";
+        return System.getenv("BOT_TOKEN");
     }
 
     private void sendStartMessage(long id) {

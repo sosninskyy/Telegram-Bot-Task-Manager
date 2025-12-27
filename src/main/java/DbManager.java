@@ -7,9 +7,9 @@ public class DbManager {
     public static Connection getConnection() {
         Connection connection = null;
         try {
-            String DataBasePostgreSQLUrl = "";
-            String user = "";
-            String password = "";
+            String DataBasePostgreSQLUrl = System.getenv("DB_URL");
+            String user = System.getenv("DB_USER");
+            String password = System.getenv("DB_PASS");
             connection = DriverManager.getConnection(DataBasePostgreSQLUrl, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
